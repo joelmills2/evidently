@@ -110,6 +110,7 @@ setup_args = dict(
         "fsspec": ["fsspec[full]>=2024.2.0"],
     },
     entry_points={"console_scripts": ["evidently=evidently.cli:app"]},
+    url="https://github.com/joelmills2/evidently",
 )
 
 

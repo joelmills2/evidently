@@ -189,7 +189,7 @@ class CounterData:
             label: counter label
             value: string value of counter
         """
-        return CounterData(label, f"{value}")
+        return CounterData(label, value)
 
     @staticmethod
     def int(label: str, value: int) -> "CounterData":
@@ -200,7 +200,7 @@ class CounterData:
             label: counter label
             value: int value
         """
-        return CounterData(label, f"{value}")
+        return CounterData(label, str(value))
 
 
 def counter(*, counters: List[CounterData], title: str = "", size: WidgetSize = WidgetSize.FULL) -> BaseWidgetInfo:

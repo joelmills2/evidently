@@ -1,4 +1,5 @@
 import datetime
+import html
 from typing import TYPE_CHECKING
 from typing import Any
 from typing import Dict
@@ -104,7 +105,10 @@ class DashboardPanelCounter(DashboardPanel):
         timestamp_end: Optional[datetime.datetime],
     ):
         if self.agg == CounterAgg.NONE:
-            return counter(counters=[CounterData(self.title, self.text or "")], size=self.size)
+            return counter(
+                counters=[CounterData(self.title, html.unescape(self.text or ""))],
+                size=self.size,
+            )
         if self.value is None:
             raise ValueError("Counters with agg should have value")
         points = data_storage.load_points(project_id, self.filter, [self.value], timestamp_start, timestamp_end)[0]

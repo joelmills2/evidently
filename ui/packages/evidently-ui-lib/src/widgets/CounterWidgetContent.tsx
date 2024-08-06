@@ -11,11 +11,9 @@ const CounterItem: React.FunctionComponent<CounterInfo> = (props) => (
     <Typography align="center" fontWeight={500} sx={{ fontSize: 36 }}>
       {props.value}
     </Typography>
-    <Typography align="center" variant="h5" fontWeight={500}>
-      {props.label}
-    </Typography>
+    <Typography align="center" variant="h5" fontWeight={500} dangerouslySetInnerHTML={{ __html: props.label }} />
   </div>
-)
+);
 
 const CounterWidgetContent: React.FunctionComponent<CounterWidgetProps> = (props) => (
   <React.Fragment>

@@ -9,8 +9,8 @@ example_scripts
 .idea
 .mypy_cache
 .pytest_cache
-#dist
-#build
+dist
+build
 MANIFEST
 
 profile.json

@@ -26,7 +26,7 @@ if TYPE_CHECKING:
 
 COLOR_DISCRETE_SEQUENCE = (
     "#02B3E6",
-    "#0a5f38",
+    "#9aca3b",
     "#6c3461",
     "#71aa34",
     "#6b8ba4",
@@ -146,10 +146,10 @@ def _get_hover_params(items: Set[TMT]) -> Dict[TMT, List[str]]:
 
 
 TEST_COLORS = {
-    TestStatus.ERROR: "#6B8BA4",
+    TestStatus.ERROR: "#00599D",
     TestStatus.FAIL: "#ed0400",
     TestStatus.WARNING: "#ffad01",
-    TestStatus.SUCCESS: "#0a5f38",
+    TestStatus.SUCCESS: "#9ACA3B",
     TestStatus.SKIPPED: "#a00498",
 }
 

@@ -3,11 +3,11 @@ from typing import Sequence
 
 from evidently.options.option import Option
 
-RED = "#ed0400"
+RED = "#02B3E6"
 GREY = "#4d4d4d"
 COLOR_DISCRETE_SEQUENCE = [
-    "#ed0400",
-    "#0a5f38",
+    "#02B3E6",
+    "#9aca3b",
     "#6c3461",
     "#71aa34",
     "#d8dcd6",

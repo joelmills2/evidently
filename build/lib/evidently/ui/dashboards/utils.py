@@ -25,8 +25,8 @@ if TYPE_CHECKING:
     from .base import PanelValue
 
 COLOR_DISCRETE_SEQUENCE = (
-    "#ed0400",
-    "#0a5f38",
+    "#02B3E6",
+    "#9aca3b",
     "#6c3461",
     "#71aa34",
     "#6b8ba4",

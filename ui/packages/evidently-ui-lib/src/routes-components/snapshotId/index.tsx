@@ -8,6 +8,8 @@ import { Grid } from '@mui/material'
 import { AdditionalGraphInfo, WidgetInfo } from '~/api'
 import { API_CLIENT_TYPE, responseParser } from '~/api/client-heplers'
 import { JSONParseExtended } from '~/api/JsonParser'
+import { ThemeProvider } from '@mui/material/styles';
+import { theme } from '../../theme/v2';
 
 export const handle: { crumb: crumbFunction<LoaderData>; hide: Record<string, Boolean> } = {
   crumb: (_, { pathname, params }) => ({ to: pathname, linkText: String(params.snapshotId) }),
@@ -23,7 +25,7 @@ export const SnapshotTemplate = ({ api }: { api: API_CLIENT_TYPE }) => {
 
   const data = useLoaderData() as LoaderData
   return (
-    <>
+    <ThemeProvider theme={theme}>
       <DashboardContext.Provider
         value={CreateDashboardContextState({
           getAdditionGraphData: (graphId) =>
@@ -60,6 +62,6 @@ export const SnapshotTemplate = ({ api }: { api: API_CLIENT_TYPE }) => {
           <DashboardContentWidgets widgets={data.widgets} />
         </Grid>
       </DashboardContext.Provider>
-    </>
+    </ThemeProvider>
   )
 }

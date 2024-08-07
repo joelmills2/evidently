@@ -29,12 +29,31 @@ export const theme = createTheme({
       }
     },
     MuiTabs: {
-      styleOverrides: { flexContainer: { gap: '10px' }, indicator: { backgroundColor: `${primaryColor} !important` } }
+      styleOverrides: {
+        flexContainer: { gap: '10px' },
+        indicator: {
+          backgroundColor: `${primaryColor} !important`,
+          '&.MuiTabs-indicator': {
+            backgroundColor: `${primaryColor} !important`,
+          },
+          '&:hover': {
+            color: `${primaryColor} !important`
+          },
+        },
+      },
     },
     MuiButton: {
       styleOverrides: {
+        root: {
+          '&:hover': {
+            color: `${primaryColor} !important`,
+          }
+        },
         contained: {
-          '&:hover': { background: colors.grey[800] }
+          '&:hover': {
+            background: colors.grey[800],
+            color: `${primaryColor} !important`,
+          }
         },
         outlined: {
           '&:hover': {
@@ -58,7 +77,8 @@ export const theme = createTheme({
           fontSize: '1rem',
           borderRadius: '5px',
           '&:hover': {
-            background: colors.grey[200]
+            background: colors.grey[200],
+            color: `${primaryColor} !important`,
           }
         }
       }

@@ -12,7 +12,7 @@ export const theme = createTheme({
   palette: {
     primary: { main: colors.grey[900], light: colors.grey[200] },
     // we use `secondary` color for interactive elements
-    secondary: { main: primaryColor, dark: '#c10400', light: colors.grey[200] },
+    secondary: { main: `${primaryColor} !important`, dark: '#c10400', light: colors.grey[200] },
     background: { default: '#fff', paper: '#fff' }
   },
   components: {
@@ -23,13 +23,13 @@ export const theme = createTheme({
             duration: transitions.duration.enteringScreen
           }),
           '&:hover': {
-            color: primaryColor
+            color: `${primaryColor} !important`
           }
         }
       }
     },
     MuiTabs: {
-      styleOverrides: { flexContainer: { gap: '10px' }, indicator: { backgroundColor: primaryColor } }
+      styleOverrides: { flexContainer: { gap: '10px' }, indicator: { backgroundColor: `${primaryColor} !important` } }
     },
     MuiButton: {
       styleOverrides: {
@@ -38,15 +38,15 @@ export const theme = createTheme({
         },
         outlined: {
           '&:hover': {
-            color: primaryColor,
-            borderColor: primaryColor,
+            color: `${primaryColor} !important`,
+            borderColor: `${primaryColor} !important`,
             background: '#fff'
           }
         },
         text: {
           '&:hover': {
-            color: primaryColor,
-            borderColor: primaryColor
+            color: `${primaryColor} !important`,
+            borderColor: `${primaryColor} !important`
           }
         }
       }
@@ -71,7 +71,7 @@ export const theme = createTheme({
           }),
           color: colors.grey[900],
           '&:hover': {
-            color: primaryColor
+            color: `${primaryColor} !important`
           }
         }
       }
@@ -85,7 +85,7 @@ export const theme = createTheme({
             duration: transitions.duration.enteringScreen
           }),
           color: colors.grey[900],
-          '&:hover': { color: primaryColor },
+          '&:hover': { color: `${primaryColor} !important` },
           '&.Mui-disabled': {
             border: 'unset',
             background: colors.grey[100]

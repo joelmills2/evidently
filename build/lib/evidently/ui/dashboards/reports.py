@@ -104,11 +104,13 @@ class DashboardPanelCounter(DashboardPanel):
         timestamp_start: Optional[datetime.datetime],
         timestamp_end: Optional[datetime.datetime],
     ):
+        print("DashboardPanelCounter.build")
         if self.agg == CounterAgg.NONE:
             return counter(
                 counters=[CounterData(self.title, html.unescape(self.text or ""))],
                 size=self.size,
             )
+
         if self.value is None:
             raise ValueError("Counters with agg should have value")
         points = data_storage.load_points(project_id, self.filter, [self.value], timestamp_start, timestamp_end)[0]

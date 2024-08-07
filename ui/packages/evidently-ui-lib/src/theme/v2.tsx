@@ -6,6 +6,7 @@ const { transitions } = createTheme()
 const primaryColor = '#02b3e3'
 const borderColorGrey = '#ded5d5'
 
+console.log('colors in v2 theme', colors)
 export const theme = createTheme({
   shape: { borderRadius: 5 },
   palette: {

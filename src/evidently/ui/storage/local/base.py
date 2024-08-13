@@ -127,31 +127,17 @@ def load_project(
     location: FSLocation, path: str, max_retries: int = 5, initial_delay: float = 0.1
 ) -> Optional[Project]:
     full_path = posixpath.join(path, METADATA_PATH)
-    print(f"Attempting to load project from path: {full_path}")
 
     for attempt in range(max_retries):
         try:
-            with location.open(full_path, "rb") as f:  # Open in binary mode
-                print(f"File opened successfully (attempt {attempt + 1})")
+            with location.open(full_path, "rb") as f:
                 content = f.read()
-                print(f"Read {len(content)} bytes")
 
                 if not content:
-                    print("File is empty, retrying...")
-                    raise ValueError("Empty file")  # Use ValueError to trigger retry
+                    raise ValueError("Empty file")
 
-                # Try to decode as UTF-8
-                try:
-                    content_str = content.decode("utf-8")
-                except UnicodeDecodeError:
-                    print("Failed to decode content as UTF-8. Printing raw bytes:")
-                    print(content[:100])  # Print first 100 bytes
-                    raise
-
-                print(f"File content (first 100 chars): {content_str[:100]}...")
-
+                content_str = content.decode("utf-8")
                 json_content = json.loads(content_str)
-                print("JSON parsed successfully")
                 return parse_obj_as(Project, json_content)
 
         except (
@@ -159,11 +145,9 @@ def load_project(
             FileNotFoundError,
             UnicodeDecodeError,
             ValueError,
-        ) as e:
-            print(f"Error on attempt {attempt + 1}: {str(e)}")
+        ):
             if attempt < max_retries - 1:
                 delay = initial_delay * (2**attempt)  # Exponential backoff
-                print(f"Retrying in {delay:.2f} seconds...")
                 time.sleep(delay)
             else:
                 print("Max retries reached, unable to load project")

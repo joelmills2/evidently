@@ -2,6 +2,7 @@ import contextlib
 import datetime
 import json
 import posixpath
+import time
 import uuid
 from collections import defaultdict
 from typing import Dict
@@ -122,30 +123,42 @@ class FSSpecBlobStorage(BlobStorage):
         return BlobMetadata(id=blob_id, size=self.location.size(blob_id))
 
 
-def load_project(location: FSLocation, path: str) -> Optional[Project]:
+def load_project(
+    location: FSLocation, path: str, max_retries: int = 5, initial_delay: float = 0.1
+) -> Optional[Project]:
     full_path = posixpath.join(path, METADATA_PATH)
     print(f"Attempting to load project from path: {full_path}")
 
-    try:
-        with location.open(full_path) as f:
-            print("File opened successfully")
-            content = f.read()
-            print(f"File content: {content[:100]}...")  # Log first 100 chars
+    for attempt in range(max_retries):
+        try:
+            with location.open(full_path) as f:
+                print(f"File opened successfully (attempt {attempt + 1})")
+                content = f.read()
+                print(f"File content: {content[:100]}...")  # Log first 100 chars
 
-            try:
+                if not content.strip():
+                    print("File is empty, retrying...")
+                    raise json.JSONDecodeError("Empty file", content, 0)
+
                 json_content = json.loads(content)
                 print("JSON parsed successfully")
                 return parse_obj_as(Project, json_content)
-            except json.JSONDecodeError as e:
-                print(f"JSON decode error: {str(e)}")
-                print(f"Problematic content: {content}")
-                raise
-    except FileNotFoundError:
-        print(f"File not found: {full_path}")
-        return None
-    except Exception as e:
-        print(f"Unexpected error loading project: {str(e)}")
-        raise
+
+        except (json.JSONDecodeError, FileNotFoundError) as e:
+            print(f"Error on attempt {attempt + 1}: {str(e)}")
+            if attempt < max_retries - 1:
+                delay = initial_delay * (2**attempt)  # Exponential backoff
+                print(f"Retrying in {delay:.2f} seconds...")
+                time.sleep(delay)
+            else:
+                print("Max retries reached, unable to load project")
+                return None
+
+        except Exception as e:
+            print(f"Unexpected error loading project: {str(e)}")
+            raise
+
+    return None
 
 
 class LocalState:

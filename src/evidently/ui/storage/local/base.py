@@ -2,6 +2,7 @@ import contextlib
 import datetime
 import json
 import posixpath
+import time
 import uuid
 from collections import defaultdict
 from typing import Dict
@@ -122,12 +123,16 @@ class FSSpecBlobStorage(BlobStorage):
         return BlobMetadata(id=blob_id, size=self.location.size(blob_id))
 
 
-def load_project(location: FSLocation, path: str) -> Optional[Project]:
-    try:
-        with location.open(posixpath.join(path, METADATA_PATH)) as f:
-            return parse_obj_as(Project, json.load(f))
-    except FileNotFoundError:
-        return None
+def load_project(location, project_id, retries=3, delay=1):
+    for attempt in range(retries):
+        try:
+            with open(f"{location}/{project_id}.json", "r") as f:
+                return parse_obj_as(Project, json.load(f))
+        except json.JSONDecodeError as e:
+            print(f"Attempt {attempt + 1}: Error loading project {project_id}: {e}")
+            time.sleep(delay)
+    print(f"Failed to load project {project_id} after {retries} attempts")
+    return None
 
 
 class LocalState:
@@ -177,7 +182,8 @@ class LocalState:
             with self.location.open(snapshot_path) as f:
                 suite = parse_obj_as(Snapshot, json.load(f))
             snapshot = SnapshotMetadata.from_snapshot(
-                suite, BlobMetadata(id=snapshot_path, size=self.location.size(snapshot_path))
+                suite,
+                BlobMetadata(id=snapshot_path, size=self.location.size(snapshot_path)),
             ).bind(project)
             self.snapshots[project.id][snapshot_id] = snapshot
             self.snapshot_data[project.id][snapshot_id] = suite
@@ -252,7 +258,10 @@ class JsonFileMetadataStorage(MetadataStorage):
         ]
 
     def list_snapshots(
-        self, project_id: ProjectID, include_reports: bool = True, include_test_suites: bool = True
+        self,
+        project_id: ProjectID,
+        include_reports: bool = True,
+        include_test_suites: bool = True,
     ) -> List[SnapshotMetadata]:
         return [
             s

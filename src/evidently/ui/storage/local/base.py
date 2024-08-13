@@ -2,7 +2,6 @@ import contextlib
 import datetime
 import json
 import posixpath
-import time
 import uuid
 from collections import defaultdict
 from typing import Dict
@@ -123,17 +122,30 @@ class FSSpecBlobStorage(BlobStorage):
         return BlobMetadata(id=blob_id, size=self.location.size(blob_id))
 
 
-def load_project(location, project_id, retries=3, delay=1):
-    for attempt in range(retries):
-        try:
-            with open(f"{location}/{project_id}.json", "r") as f:
-                print(f)
-                return parse_obj_as(Project, json.load(f))
-        except json.JSONDecodeError as e:
-            print(f"Attempt {attempt + 1}: Error loading project {project_id}: {e}")
-            time.sleep(delay)
-    print(f"Failed to load project {project_id} after {retries} attempts")
-    return None
+def load_project(location: FSLocation, path: str) -> Optional[Project]:
+    full_path = posixpath.join(path, METADATA_PATH)
+    print(f"Attempting to load project from path: {full_path}")
+
+    try:
+        with location.open(full_path) as f:
+            print("File opened successfully")
+            content = f.read()
+            print(f"File content: {content[:100]}...")  # Log first 100 chars
+
+            try:
+                json_content = json.loads(content)
+                print("JSON parsed successfully")
+                return parse_obj_as(Project, json_content)
+            except json.JSONDecodeError as e:
+                print(f"JSON decode error: {str(e)}")
+                print(f"Problematic content: {content}")
+                raise
+    except FileNotFoundError:
+        print(f"File not found: {full_path}")
+        return None
+    except Exception as e:
+        print(f"Unexpected error loading project: {str(e)}")
+        raise
 
 
 class LocalState:

@@ -131,20 +131,35 @@ def load_project(
 
     for attempt in range(max_retries):
         try:
-            with location.open(full_path) as f:
+            with location.open(full_path, "rb") as f:  # Open in binary mode
                 print(f"File opened successfully (attempt {attempt + 1})")
                 content = f.read()
-                print(f"File content: {content[:100]}...")  # Log first 100 chars
+                print(f"Read {len(content)} bytes")
 
-                if not content.strip():
+                if not content:
                     print("File is empty, retrying...")
-                    raise json.JSONDecodeError("Empty file", content, 0)
+                    raise ValueError("Empty file")  # Use ValueError to trigger retry
 
-                json_content = json.loads(content)
+                # Try to decode as UTF-8
+                try:
+                    content_str = content.decode("utf-8")
+                except UnicodeDecodeError:
+                    print("Failed to decode content as UTF-8. Printing raw bytes:")
+                    print(content[:100])  # Print first 100 bytes
+                    raise
+
+                print(f"File content (first 100 chars): {content_str[:100]}...")
+
+                json_content = json.loads(content_str)
                 print("JSON parsed successfully")
                 return parse_obj_as(Project, json_content)
 
-        except (json.JSONDecodeError, FileNotFoundError) as e:
+        except (
+            json.JSONDecodeError,
+            FileNotFoundError,
+            UnicodeDecodeError,
+            ValueError,
+        ) as e:
             print(f"Error on attempt {attempt + 1}: {str(e)}")
             if attempt < max_retries - 1:
                 delay = initial_delay * (2**attempt)  # Exponential backoff

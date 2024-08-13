@@ -127,6 +127,7 @@ def load_project(location, project_id, retries=3, delay=1):
     for attempt in range(retries):
         try:
             with open(f"{location}/{project_id}.json", "r") as f:
+                print(f)
                 return parse_obj_as(Project, json.load(f))
         except json.JSONDecodeError as e:
             print(f"Attempt {attempt + 1}: Error loading project {project_id}: {e}")

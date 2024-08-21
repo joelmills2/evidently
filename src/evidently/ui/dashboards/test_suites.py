@@ -56,7 +56,11 @@ class TestFilter(BaseModel):
         if test_hash is not None:
             warnings.warn("test_hash is deprecated, please use test_fingerprint")
             test_fingerprint = test_hash
-        super().__init__(test_id=test_id, test_fingerprint=test_fingerprint, test_args=test_args or {})
+        super().__init__(
+            test_id=test_id,
+            test_fingerprint=test_fingerprint,
+            test_args=test_args or {},
+        )
 
     def test_matched(self, test: Test) -> bool:
         if self.test_fingerprint is not None:
@@ -102,7 +106,12 @@ class DashboardPanelTestSuite(DashboardPanel):
     ) -> BaseWidgetInfo:
         self.filter.include_test_suites = True
         points: TestResultPoints = data_storage.load_test_results(
-            project_id, self.filter, self.test_filters, self.time_agg, timestamp_start, timestamp_end
+            project_id,
+            self.filter,
+            self.test_filters,
+            self.time_agg,
+            timestamp_start,
+            timestamp_end,
         )
 
         if self.panel_type == TestSuitePanelType.AGGREGATE:
@@ -119,7 +128,12 @@ class DashboardPanelTestSuite(DashboardPanel):
         bars = [Counter(ti.status for ti in points[d].values()) for d in dates]
         fig = go.Figure(
             data=[
-                go.Bar(name=status.value, x=dates, y=[c[status] for c in bars], marker_color=color)
+                go.Bar(
+                    name=status.value,
+                    x=dates,
+                    y=[c[status] for c in bars],
+                    marker_color=color,
+                )
                 for status, color in TEST_COLORS.items()
             ],
             layout={"showlegend": True},
@@ -154,8 +168,6 @@ class DashboardPanelTestSuite(DashboardPanel):
                     hovertemplate=_get_test_hover(test.name, hover_params[test]),
                     customdata=[get_description(test, d) for i, d in enumerate(dates)],
                     showlegend=False,
-                    text=[test.name for _ in dates],
-                    textposition="inside",
                 )
                 for test in tests
             ]
@@ -171,12 +183,27 @@ class DashboardPanelTestSuite(DashboardPanel):
             ],
             layout={"showlegend": True},
         )
+
+        annotations = [
+            dict(
+                x=-0.01,  # Adjust this value to position the text
+                y=i / len(tests),
+                xref="paper",
+                yref="paper",
+                text=test.name,
+                showarrow=False,
+                xanchor="right",
+                align="right",
+                font=dict(size=10),
+            )
+            for i, test in enumerate(tests)
+        ]
         fig.update_layout(
             barmode="stack",
             bargap=0.01,
             barnorm="fraction",
-            uniformtext_minsize=4,
-            uniformtext_mode="hide",
+            annotations=annotations,
+            margin=dict(l=150, r=0, t=0, b=0),
         )
         fig.update_yaxes(showticklabels=False)
         return fig
@@ -212,7 +239,10 @@ class DashboardPanelTestSuiteCounter(DashboardPanel):
         total = sum(statuses.values())
         value = sum(statuses[s] for s in self.statuses)
         statuses_join = ", ".join(s.value for s in self.statuses)
-        return counter(counters=[CounterData(f"{value}/{total} {statuses_join}{postfix}", self.title)], size=self.size)
+        return counter(
+            counters=[CounterData(f"{value}/{total} {statuses_join}{postfix}", self.title)],
+            size=self.size,
+        )
 
     def _build_none(
         self,
@@ -222,7 +252,12 @@ class DashboardPanelTestSuiteCounter(DashboardPanel):
         timestamp_end: Optional[datetime.datetime],
     ) -> Tuple[Counter, str]:
         points = data_storage.load_test_results(
-            project_id, self.filter, self.test_filters, None, timestamp_start, timestamp_end
+            project_id,
+            self.filter,
+            self.test_filters,
+            None,
+            timestamp_start,
+            timestamp_end,
         )
         statuses: typing.Counter[TestStatus] = Counter()
         for values in points.values():
@@ -237,7 +272,12 @@ class DashboardPanelTestSuiteCounter(DashboardPanel):
         timestamp_end: Optional[datetime.datetime],
     ) -> Tuple[Counter, str]:
         points = data_storage.load_test_results(
-            project_id, self.filter, self.test_filters, None, timestamp_start, timestamp_end
+            project_id,
+            self.filter,
+            self.test_filters,
+            None,
+            timestamp_start,
+            timestamp_end,
         )
 
         if len(points) == 0:

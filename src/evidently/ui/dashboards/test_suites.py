@@ -163,13 +163,13 @@ class DashboardPanelTestSuite(DashboardPanel):
                 go.Bar(
                     name="",
                     x=dates,
-                    y=[test.name for _ in dates],
+                    y=[i for _ in dates],
                     marker_color=[get_color(test, d) for d in dates],
                     hovertemplate=_get_test_hover(test.name, hover_params[test]),
                     customdata=[get_description(test, d) for i, d in enumerate(dates)],
                     showlegend=False,
                 )
-                for test in tests
+                for i, test in tests
             ]
             + [
                 go.Scatter(

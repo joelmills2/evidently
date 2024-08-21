@@ -154,6 +154,8 @@ class DashboardPanelTestSuite(DashboardPanel):
                     hovertemplate=_get_test_hover(test.name, hover_params[test]),
                     customdata=[get_description(test, d) for i, d in enumerate(dates)],
                     showlegend=False,
+                    text=[test.name for _ in dates],
+                    textposition="inside",
                 )
                 for test in tests
             ]
@@ -173,6 +175,8 @@ class DashboardPanelTestSuite(DashboardPanel):
             barmode="stack",
             bargap=0.01,
             barnorm="fraction",
+            uniformtext_minsize=4,
+            uniformtext_mode="hide",
         )
         fig.update_yaxes(showticklabels=False)
         return fig

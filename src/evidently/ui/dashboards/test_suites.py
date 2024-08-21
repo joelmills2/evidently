@@ -163,7 +163,7 @@ class DashboardPanelTestSuite(DashboardPanel):
                 go.Bar(
                     name="",
                     x=dates,
-                    Y=[1 for _ in dates],
+                    y=[1 for _ in dates],
                     marker_color=[get_color(test, d) for d in dates],
                     orientation="h",
                     hovertemplate=_get_test_hover(test.name, hover_params[test]),

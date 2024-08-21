@@ -162,8 +162,8 @@ class DashboardPanelTestSuite(DashboardPanel):
             data=[
                 go.Bar(
                     name="",
-                    x=[1 for _ in dates],
-                    y=[test.name for _ in dates],
+                    x=dates,
+                    y=test.name,
                     marker_color=[get_color(test, d) for d in dates],
                     hovertemplate=_get_test_hover(test.name, hover_params[test]),
                     customdata=[get_description(test, d) for i, d in enumerate(dates)],
@@ -188,13 +188,6 @@ class DashboardPanelTestSuite(DashboardPanel):
             barmode="stack",
             bargap=0.01,
             barnorm="fraction",
-            yaxis=dict(
-                autorange="reversed",
-                tickmode="array",
-                tickvals=list(range(len(tests))),
-                ticktext=[test.name for test in tests],
-                automargin=True,
-            ),
         )
         return fig
 

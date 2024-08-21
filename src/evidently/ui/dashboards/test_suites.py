@@ -164,7 +164,6 @@ class DashboardPanelTestSuite(DashboardPanel):
                     name="",
                     x=dates,
                     y=[test.name for _ in dates],
-                    orientation="h",
                     marker_color=[get_color(test, d) for d in dates],
                     hovertemplate=_get_test_hover(test.name, hover_params[test]),
                     customdata=[get_description(test, d) for i, d in enumerate(dates)],
@@ -189,7 +188,7 @@ class DashboardPanelTestSuite(DashboardPanel):
             barmode="stack",
             bargap=0.01,
             barnorm="fraction",
-            height=30 * len(tests),
+            height=max(300, len(tests) * 25),
             margin=dict(l=175, r=0, t=0, b=0),
             yaxis=dict(
                 autorange="reversed",
@@ -197,12 +196,6 @@ class DashboardPanelTestSuite(DashboardPanel):
                 tickvals=list(range(len(tests))),
                 ticktext=[test.name for test in tests],
                 automargin=True,
-            ),
-            xaxis=dict(
-                side="bottom",
-                tickmode="array",
-                tickvals=[0, 0.25, 0.5, 0.75, 1],
-                ticktext=dates,
             ),
         )
         return fig
